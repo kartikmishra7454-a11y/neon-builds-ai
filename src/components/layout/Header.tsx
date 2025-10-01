@@ -1,13 +1,17 @@
-import { ShoppingCart, User, Search, Menu, Cpu, LogIn } from "lucide-react";
+import { ShoppingCart, User, Search, Menu, Cpu, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
-  const cartItemsCount = 3; // This will come from context/state later
+  const { totalItems } = useCart();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
@@ -44,19 +48,28 @@ export function Header() {
             <Link to="/cart">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
-                {cartItemsCount > 0 && (
+                {totalItems > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-accent text-accent-foreground">
-                    {cartItemsCount}
+                    {totalItems}
                   </Badge>
                 )}
               </Button>
             </Link>
 
-            <Link to="/auth">
-              <Button variant="ghost" size="icon">
-                <LogIn className="h-5 w-5" />
+            {user ? (
+              <Button variant="ghost" size="icon" onClick={() => {
+                logout();
+                navigate("/");
+              }}>
+                <LogOut className="h-5 w-5" />
               </Button>
-            </Link>
+            ) : (
+              <Link to="/auth">
+                <Button variant="ghost" size="icon">
+                  <LogIn className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
 
             <Button variant="ghost" size="icon" className="md:hidden">
               <Menu className="h-5 w-5" />
