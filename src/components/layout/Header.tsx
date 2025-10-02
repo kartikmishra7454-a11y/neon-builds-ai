@@ -94,6 +94,11 @@ export function Header() {
           <Link to="/support" className="text-muted-foreground hover:text-primary transition-colors">
             Support
           </Link>
+          {user?.role === "admin" && (
+            <Link to="/admin" className="text-muted-foreground hover:text-primary transition-colors">
+              Admin
+            </Link>
+          )}
         </nav>
       </div>
     </header>
