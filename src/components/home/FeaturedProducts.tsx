@@ -4,7 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Star, ShoppingCart, Eye } from "lucide-react";
 import { mockProducts } from "@/data/mockProducts";
 import { Product } from "@/types/product";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/hooks/use-toast";
 
 export function FeaturedProducts() {
   const featuredProducts = mockProducts.filter(p => p.featured).slice(0, 4);
@@ -45,36 +47,57 @@ export function FeaturedProducts() {
 }
 
 function ProductCard({ product }: { product: Product }) {
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, 1);
+    toast({
+      title: "Added to cart",
+      description: `${product.name} added to your cart.`,
+    });
+  };
+
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/product/${product.id}`);
+  };
+
   return (
-    <Card className="group card-hover gradient-border overflow-hidden">
-      <div className="relative">
-        {/* Product Image */}
-        <div className="aspect-square overflow-hidden bg-background">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-          />
-        </div>
+    <Link to={`/product/${product.id}`}>
+      <Card className="group card-hover gradient-border overflow-hidden">
+        <div className="relative">
+          {/* Product Image */}
+          <div className="aspect-square overflow-hidden bg-background">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+          </div>
 
-        {/* Discount Badge */}
-        {product.discount && (
-          <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground">
-            -{product.discount}%
-          </Badge>
-        )}
+          {/* Discount Badge */}
+          {product.discount && (
+            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground">
+              -{product.discount}%
+            </Badge>
+          )}
 
-        {/* Quick Actions */}
-        <div className="absolute bottom-2 left-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button size="sm" className="flex-1 bg-primary/90 hover:bg-primary">
-            <ShoppingCart className="h-4 w-4 mr-1" />
-            Add
-          </Button>
-          <Button size="sm" variant="secondary" className="bg-secondary/90 hover:bg-secondary">
-            <Eye className="h-4 w-4" />
-          </Button>
+          {/* Quick Actions */}
+          <div className="absolute bottom-2 left-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Button size="sm" className="flex-1 bg-primary/90 hover:bg-primary" onClick={handleAddToCart}>
+              <ShoppingCart className="h-4 w-4 mr-1" />
+              Add
+            </Button>
+            <Button size="sm" variant="secondary" className="bg-secondary/90 hover:bg-secondary" onClick={handleViewDetails}>
+              <Eye className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-      </div>
 
       <CardContent className="p-4 space-y-3">
         {/* Product Info */}
@@ -113,6 +136,7 @@ function ProductCard({ product }: { product: Product }) {
           )}
         </div>
       </CardContent>
-    </Card>
+      </Card>
+    </Link>
   );
 }

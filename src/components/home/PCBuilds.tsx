@@ -38,17 +38,19 @@ export function PCBuilds() {
         {/* Build Categories */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           {['Gaming', 'Professional', 'Budget', 'High-End'].map((category) => (
-            <Card key={category} className="gradient-border card-hover">
-              <CardContent className="p-6 text-center">
-                <div className="mb-3">
-                  {category === 'Gaming' && <Gamepad2 className="h-8 w-8 mx-auto text-accent" />}
-                  {category === 'Professional' && <Briefcase className="h-8 w-8 mx-auto text-secondary" />}
-                  {category === 'Budget' && <DollarSign className="h-8 w-8 mx-auto text-primary" />}
-                  {category === 'High-End' && <Monitor className="h-8 w-8 mx-auto text-purple-500" />}
-                </div>
-                <h3 className="font-semibold">{category}</h3>
-              </CardContent>
-            </Card>
+            <Link key={category} to={`/prebuilt?category=${category.toLowerCase()}`}>
+              <Card className="gradient-border card-hover">
+                <CardContent className="p-6 text-center">
+                  <div className="mb-3">
+                    {category === 'Gaming' && <Gamepad2 className="h-8 w-8 mx-auto text-accent" />}
+                    {category === 'Professional' && <Briefcase className="h-8 w-8 mx-auto text-secondary" />}
+                    {category === 'Budget' && <DollarSign className="h-8 w-8 mx-auto text-primary" />}
+                    {category === 'High-End' && <Monitor className="h-8 w-8 mx-auto text-purple-500" />}
+                  </div>
+                  <h3 className="font-semibold">{category}</h3>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 
@@ -106,12 +108,16 @@ export function PCBuilds() {
 
                   {/* Actions */}
                   <div className="flex gap-2 pt-4">
-                    <Button className="flex-1 neon-button">
-                      Customize
-                    </Button>
-                    <Button variant="outline" className="flex-1 border-primary/50 hover:bg-primary/10">
-                      View Details
-                    </Button>
+                    <Link to="/build" className="flex-1">
+                      <Button className="w-full neon-button">
+                        Customize
+                      </Button>
+                    </Link>
+                    <Link to={`/prebuilt?category=${build.type}`} className="flex-1">
+                      <Button variant="outline" className="w-full border-primary/50 hover:bg-primary/10">
+                        View Details
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
